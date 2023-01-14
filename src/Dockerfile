@@ -1,10 +1,10 @@
-FROM tmvdl/android:cordova
+FROM tmvdl/android:ionic
 
 WORKDIR /app
 
-RUN cordova create nume com.brtmvdl.nume Nume
+RUN cordova create study com.brtmvdl.study study
 
-WORKDIR /app/nume
+WORKDIR /app/study
 
 COPY www/html www
 
