@@ -6,11 +6,15 @@ class Request {
   constructor(chunk) {
     logger.info('libs/http/request:Request', { chunk: chunk.toString() })
 
-    this.chunk = chunk
+    this.chunk = chunk.toString()
 
+    this.method = this.parseMethod(chunk)
     this.pathname = this.parsePathname(chunk)
-    this.headers = this.parseHeaders(chunk)
     this.query = this.parseQuery(chunk)
+    this.http_version = this.parseHttpVersion(chunk)
+
+    this.headers = this.parseHeaders(chunk)
+
     this.body = this.parseBody(chunk)
   }
 
@@ -26,32 +30,50 @@ class Request {
     const body = others.find(() => true)
 
     return {
-      first,
+      first: first.split(' '),
       headers,
       body,
     }
   }
 
-  parsePathname() {
-    logger.info('libs/http/request:Request.parsePathname', {})
+  parseMethod(chunk) {
+    logger.info('libs/http/request:Request.parseMethod', { chunk })
+
+    const { first: [method,] } = this.splitLines(chunk)
+
+    return method
+  }
+
+  parsePathname(chunk) {
+    logger.info('libs/http/request:Request.parsePathname', { chunk })
+
+    const { first: [, pathname] } = this.splitLines(chunk)
+
+    return pathname.substr(1)
+  }
+
+  parseQuery(chunk) {
+    logger.info('libs/http/request:Request.parseQuery', { chunk })
 
     return {}
   }
 
-  parseHeaders() {
-    logger.info('libs/http/request:Request.parseHeaders', {})
+  parseHttpVersion(chunk) {
+    logger.info('libs/http/request:Request.parseHttpVersion', { chunk })
+
+    const { first: [, , version] } = this.splitLines(chunk)
+
+    return version
+  }
+
+  parseHeaders(chunk) {
+    logger.info('libs/http/request:Request.parseHeaders', { chunk })
 
     return {}
   }
 
-  parseQuery() {
-    logger.info('libs/http/request:Request.parseQuery', {})
-
-    return {}
-  }
-
-  parseBody() {
-    logger.info('libs/http/request:Request.parseBody', {})
+  parseBody(chunk) {
+    logger.info('libs/http/request:Request.parseBody', { chunk })
 
     return {}
   }
