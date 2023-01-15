@@ -80,21 +80,17 @@
       }
 
       form.button.on('click', () => {
-        answers.push({
-          form_id,
-          question_id,
-          text: form.input.getValue(),
-          option: form.options.getValue(),
-        })
+        const text = form.input.getValue()
+        const option = form.options.getValue()
+
+        answers.push({ form_id, question_id, text, option })
 
         if (questions[++question_id]) {
           renderQuestion({ form_id, question_id, questions })
         } else {
-          form.button.on('click', () => {
-            API.saveForm({ answers })
-              .then(() => Flow.goTo('./index.html'))
-              .catch((err) => console.error(err))
-          })
+          API.saveForm({ answers })
+            .then(() => Flow.goTo('./index.html'))
+            .catch((err) => console.error(err))
         }
       })
     }
