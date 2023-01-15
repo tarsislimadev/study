@@ -2,14 +2,54 @@
 <html lang="en-us">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study</title>
 </head>
 
 <body>
+  <div id="app"></div>
 
+  <script src="./js/nElement.js"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/flow.js"></script>
+  <script>
+    const app = nElement.fromId('app')
+
+    const title = new nH1()
+    title.setText('Study')
+    app.append(title)
+
+    const createButton = new nLink()
+    createButton.setText('create')
+    createButton.href('./create.html')
+    app.append(createButton)
+
+    const error = new nError()
+    app.append(error)
+
+    const renderForm = ({ id, name }) => {
+      const el = new nButton()
+      el.setText(name)
+      el.on('click', () => Flow.goTo('form.html', { id }))
+      return el
+    }
+
+    const formsList = new nElement()
+    app.append(formsList)
+
+    const renderList = (list) => {
+      formsList.clear()
+
+      list.forEach(({ id, name }) => formsList.append(renderForm({ id, name })))
+    }
+
+    API.listForms()
+      .then(({ data: { list } }) => renderList(list))
+      .catch((err) => error.setText(err.message))
+
+  </script>
 </body>
 
 </html>
