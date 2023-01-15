@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study</title>
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <script src="./js/nElement.js"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/flow.js"></script>
+  <script>
+    const app = nElement.fromId('app')
+
+    const answers = []
+
+    const text = new nText()
+    text.setText('Loading...')
+    app.append(text)
+
+    const form = new class nQuestionForm extends nElement {
+      title = new nElement
+      input = new nInputText
+      options = new nRadioGroup
+      button = new nButton
+
+      constructor() {
+        super({})
+
+        this.append(this.title)
+
+        this.append(this.input)
+
+        this.append(this.options)
+
+        this.button.setText('Salvar')
+        this.append(this.button)
+
+      }
+
+      clear() {
+        this.title.clear()
+        this.input.clear()
+        this.options.clear()
+      }
+    }
+    app.append(form)
+
+    const error = new nError()
+    app.append(error)
+
+    const renderQuestion = ({ form_id, question_id, questions }) => {
+      const question = questions[question_id]
+      let option = null
+
+      const { name, type, def, options = [] } = question
+
+      form.title.clear()
+      form.title.setText(name)
+
+      form.input.clear()
+      form.input.setValue(def)
+
+      form.options.clear()
+
+      if (type === 'string') {
+        form.options.hide()
+        form.input.show()
+        form.input.setValue(def)
+      } else {
+        form.input.hide()
+        form.options.show()
+
+        options.forEach(({ key, value }, ix) => form.options.add({ key, value }))
+      }
+
+      form.button.on('click', () => {
+        answers.push({
+          form_id,
+          question_id,
+          text: form.input.getValue(),
+          option: form.options.getValue(),
+        })
+
+        if (questions[++question_id]) {
+          renderQuestion({ form_id, question_id, questions })
+        } else {
+          form.button.on('click', () => {
+            API.saveForm({ answers })
+              .then(() => Flow.goTo('./index.html'))
+              .catch((err) => console.error(err))
+          })
+        }
+      })
+    }
+
+    const renderForm = ({ id: form_id, name, categories: [category] }) => {
+      text.setText(`${name} - ${category.name}`)
+
+      renderQuestion({
+        form_id,
+        question_id: 0,
+        questions: category.questions
+      })
+    }
+
+    API.getForm(Flow.getParams('form.html'))
+      .then((res) => res.get('item'))
+      .then((form) => renderForm(form))
+      .catch((err) => error.setText(err.message))
+
+  </script>
+
+</body>
+
+</html>
