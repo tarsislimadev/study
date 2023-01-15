@@ -10,8 +10,10 @@ services:
       - '80:80'
 
   api:
+    container_name: 'api'
     build: './src/api'
     volumes:
       - './src/api:/app'
     ports:
       - '8080:80'
+
