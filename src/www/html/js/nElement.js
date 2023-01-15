@@ -1,5 +1,5 @@
 
-class nTag {
+class nElement {
   container = document.createElement('div')
   element = document.createElement('div')
 
@@ -11,7 +11,7 @@ class nTag {
       tagName: 'div',
     },
     component: {
-      name: 'bug',
+      name: 'component',
     }
   }
 
@@ -46,13 +46,13 @@ class nTag {
   }
 
   static fromElement(el = document.createElement('')) {
-    const bug = new nTag()
-    bug.element = el
-    return bug
+    const element = new nElement()
+    element.element = el
+    return element
   }
 
   static fromId(id) {
-    return nTag.fromElement(document.getElementById(id))
+    return nElement.fromElement(document.getElementById(id))
   }
 
   setContainerStyle(name, value) {
@@ -110,6 +110,16 @@ class nTag {
     return this.element.dataset[name]
   }
 
+  hide() {
+    this.element.style.display = 'none'
+    return this
+  }
+
+  show() {
+    this.element.style.display = 'inline-block'
+    return this
+  }
+
   clear() {
     while (this.element.children.length > 0) {
       this.element.children.item(0).remove()
@@ -118,7 +128,7 @@ class nTag {
     return this
   }
 
-  append(ntag = new nTag()) {
+  append(ntag = new nElement()) {
     this.element.append(ntag.render())
     return this
   }
@@ -129,7 +139,7 @@ class nTag {
   }
 }
 
-class nH1 extends nTag {
+class nH1 extends nElement {
   constructor() {
     super({
       component: { name: 'h1' },
@@ -140,7 +150,7 @@ class nH1 extends nTag {
   }
 }
 
-class nText extends nTag {
+class nText extends nElement {
   constructor() {
     super({
       element: { tagName: 'p' },
@@ -149,7 +159,7 @@ class nText extends nTag {
   }
 }
 
-class nNumber extends nTag {
+class nNumber extends nElement {
   num = 0
 
   constructor() {
@@ -184,7 +194,7 @@ class nNumber extends nTag {
   }
 }
 
-class nButton extends nTag {
+class nButton extends nElement {
   constructor() {
     super({
       element: { tagName: 'button' },
@@ -198,7 +208,7 @@ class nButton extends nTag {
   }
 }
 
-class nLink extends nTag {
+class nLink extends nElement {
   constructor() {
     super({
       element: { tagName: 'a' },
@@ -215,7 +225,7 @@ class nLink extends nTag {
   }
 }
 
-class nFlex extends nTag {
+class nFlex extends nElement {
   constructor() {
     super({
       component: { name: 'flex' },
@@ -226,7 +236,7 @@ class nFlex extends nTag {
   }
 }
 
-class nLabel extends nTag {
+class nLabel extends nElement {
   constructor() {
     super({
       component: { name: 'label' },
@@ -238,7 +248,7 @@ class nLabel extends nTag {
   }
 }
 
-class Valuable extends nTag {
+class Valuable extends nElement {
   maxlength = undefined
 
   setMaxLength(value) {
@@ -287,7 +297,7 @@ class nInputNumber extends Valuable {
   }
 }
 
-class nInputDate extends nTag {
+class nInputDate extends nElement {
   flex = new nFlex
 
   day = new nInputNumber
@@ -345,7 +355,7 @@ class nInputDate extends nTag {
   }
 }
 
-class nInputTime extends nTag {
+class nInputTime extends nElement {
   flex = new nFlex
 
   hour = new nInputNumber
@@ -358,7 +368,7 @@ class nInputTime extends nTag {
 
     this.flex.append(this.makeInput(this.hour))
 
-    const sep = new nTag()
+    const sep = new nElement()
     sep.setText(':')
 
     sep.setContainerStyle('width', '1rem')
@@ -394,7 +404,7 @@ class nInputTime extends nTag {
   }
 }
 
-class nError extends nTag {
+class nError extends nElement {
   constructor() {
     super({
       component: { name: 'error' },
@@ -404,13 +414,44 @@ class nError extends nTag {
     this.setStyle('padding-top', '0.5rem')
     this.setStyle('padding-botton', '0.5rem')
   }
+
+  setText(value = new Error) {
+    super.setText(value instanceof Error ? (value.message) : (value))
+  }
 }
 
-class nCenter extends nTag {
+class nCenter extends nElement {
   constructor() {
     super({ component: { name: 'center' } })
 
     this.setStyle('margin', '0 auto')
     this.setStyle('width', '42rem')
+  }
+}
+
+class nRadioGroup extends nElement {
+  value = null
+
+  constructor() {
+    super({
+      component: { name: 'radio' }
+    })
+  }
+
+  add({ key, value }) {
+    const self = this
+
+    const option = new nButton()
+    option.setText(key)
+
+    option.setData('key', key)
+    option.setData('value', value)
+
+    option.on('click', () => self.value = value)
+    this.append(option)
+  }
+
+  getValue() {
+    return this.value
   }
 }
