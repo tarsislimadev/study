@@ -2,12 +2,15 @@ version: '3'
 
 services:
 
+  docker-push:
+    image: 'tmvdl/projects:study'
+    build: './src/www'
+
   github-release:
     image: 'github-release'
     build: './src'
 
   www:
-    image: 'tmvdl/projects:study'
     build: './src/www'
     volumes:
       - './src/www/html:/usr/share/nginx/html'
