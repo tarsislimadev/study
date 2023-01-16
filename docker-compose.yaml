@@ -7,17 +7,17 @@ services:
     build: './src'
 
   www:
+    image: 'tmvdl/projects:study'
     build: './src/www'
     volumes:
       - './src/www/html:/usr/share/nginx/html'
     ports:
       - '80:80'
+    depends_on:
+      - 'api'
 
   api:
     container_name: 'api'
     build: './src/api'
     volumes:
       - './src/api:/app'
-    ports:
-      - '8080:80'
-
