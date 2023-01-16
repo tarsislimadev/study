@@ -1,4 +1,5 @@
 const path = require('path')
+const fs = require('fs')
 
 const { v4: uuid } = require('../../libs/uuid')
 const logger = require('../../libs/logger')
@@ -15,6 +16,14 @@ class DatabaseObject {
     this.dirname = dirname
 
     this.id = id
+
+    fs.mkdirSync(path.resolve(this.dirname, this.id), { recursive: true })
+  }
+
+  name() {
+    logger.info('libs/database:DatabaseObject.name', {})
+
+    return path.resolve(this.dirname, this.id)
   }
 
   write(name, value) {
@@ -35,6 +44,12 @@ class DatabaseObject {
 
     return self
   }
+
+  read(name, def = null) {
+    logger.info('libs/database:DatabaseObject.read', { name, def })
+
+    return fs.readFileSync(path.resolve(this.name(), name)) || def
+  }
 }
 
 class Database {
@@ -44,6 +59,8 @@ class Database {
     logger.info('libs/database:Database', { dirname })
 
     this.dirname = dirname
+
+    fs.mkdirSync(this.dirname, { recursive: true })
   }
 
   in(dirname = '') {
@@ -56,6 +73,21 @@ class Database {
     logger.info('libs/database:Database.new', {})
 
     return new DatabaseObject(path.resolve(this.dirname, uuid()))
+  }
+
+  list() {
+    logger.info('libs/database:Database.list', {})
+
+    return fs.readdirSync(this.dirname)
+      .map((item) => path.resolve(this.dirname, item))
+  }
+
+  listJSON() {
+    logger.info('libs/database:Database.listJSON', {})
+
+    return this.list()
+      .map((dirname) => new DatabaseObject(this.dirname, dirname))
+      .map((obj) => obj.toJSON())
   }
 }
 
