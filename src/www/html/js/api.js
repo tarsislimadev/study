@@ -57,3 +57,7 @@ API.listForms = ({ } = {}) => Ajax.post(['forms'])
 API.getForm = ({ id = null } = {}) => Ajax.post(['forms', id])
 
 API.saveForm = ({ answers }) => Ajax.post(['forms', 'save'], { answers })
+
+API.createQuestion = () => Ajax.post(['question', 'create'], {})
+
+API.listQuestions = () => Ajax.post(['question', 'list'], {})

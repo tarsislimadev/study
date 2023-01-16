@@ -38,11 +38,11 @@ class nElement {
       this.container.classList.add(`ct-${this.options.component.name}`)
     }
 
-    this.setStyle('margin', '0')
     this.setStyle('padding', '0')
-    this.setStyle('outline', 'none')
     this.setStyle('border', 'none')
+    this.setStyle('outline', 'none')
     this.setStyle('box-sizing', 'border-box')
+    this.setStyle('margin', '0rem 0rem calc(1rem / 8) 0rem')
   }
 
   static fromElement(el = document.createElement('')) {
@@ -204,7 +204,8 @@ class nButton extends nElement {
     this.setStyle('border', 'none')
     this.setStyle('outline', 'none')
     this.setStyle('padding', '1rem')
-    this.setStyle('font-weight', 'bold')
+    // this.setStyle('font-weight', 'bold')
+    this.setStyle('margin', '0rem 0rem calc(1rem / 8) 0rem')
   }
 }
 
@@ -265,6 +266,10 @@ class Valuable extends nElement {
     return this
   }
 
+  placeholder(value) {
+    this.element.value = value
+    return this
+  }
 }
 
 class nInputText extends Valuable {
@@ -279,7 +284,9 @@ class nInputText extends Valuable {
     this.setContainerStyle('display', 'inline-block')
     this.setContainerStyle('width', '100%')
 
+    this.setStyle('box-shadow', '0rem 0rem calc(1rem / 8) 0rem #000000')
     this.setStyle('padding', '0.5rem')
+    this.setStyle('font', 'inherit')
     this.setStyle('width', '100%')
   }
 }
@@ -417,6 +424,14 @@ class nError extends nElement {
 
   setText(value = new Error) {
     super.setText(value instanceof Error ? (value.message) : (value))
+
+    return this
+  }
+
+  setError(error = new Error) {
+    console.error(error)
+    
+    return this.setText(error.message)
   }
 }
 
