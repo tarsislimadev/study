@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study</title>
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <script src="./js/nElement.js"></script>
+  <script src="./js/components.js"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/flow.js"></script>
+  <script>
+    const app = nElement.fromId('app')
+
+    const title = new nH1()
+    title.setText('Study')
+    app.append(title)
+
+    const createTextGroup = ({ placeholder }) => {
+      const group = new nTextGroup()
+      group.input.placeholder(placeholder)
+      return group
+    }
+
+    const form_name = createTextGroup({ placeholder: 'formulario' })
+    app.append(form_name)
+
+    const error = new nError()
+    app.append(error)
+
+    const questions = new nElement()
+
+    const loadQuestions = () => {
+      API.listQuestions()
+        .then((res) => renderQuestions(res.get('list')))
+        .catch((err) => error.setError(err))
+    }
+
+    const renderQuestions = (list = []) => {
+      list.forEach((item) => {
+        const el = new class nQuestion extends nElement {
+          label = new nElement()
+          input = new nInput()
+          error = new nError()
+
+          answer = new class nAnswer extends nElement {
+            label = new nElement()
+            input = new nInput()
+            error = new nError()
+
+            type = new nSelect()
+
+            constructor() {
+              super({ component: { name: 'answer' } })
+              this.append(this.label)
+              this.append(this.input)
+              this.append(this.error)
+              this.append(this.type)
+            }
+          }
+
+          constructor() {
+            super({ component: { name: 'question' } })
+            this.append(this.label)
+            this.append(this.input)
+            this.append(this.error)
+          }
+        }
+
+        questions.clear()
+
+        questions.append(el)
+      })
+    }
+
+    const addQuestionButton = new nButton()
+    addQuestionButton.setText('Add question')
+    addQuestionButton.on('click', () => {
+      API.createQuestion({})
+        .then((res) => loadQuestions())
+        .catch((err) => error.setError(err))
+    })
+    app.append(addQuestionButton)
+
+    const button = new nButton()
+    button.setText('Save')
+    button.on('click', () => {
+      const form = {}
+
+      API.saveForm({ form })
+        .then(() => Flow.goTo('./index.html'))
+        .catch((err) => error.setError(err))
+    })
+    app.append(button)
+
+  </script>
+</body>
+
+</html>
