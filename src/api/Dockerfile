@@ -1,7 +1,11 @@
-FROM node:lts 
+FROM node:lts
 
-WORKDIR /app 
+ENV PATH=/data
 
-COPY . . 
+ENV PORT=80
+
+WORKDIR /app
+
+COPY . .
 
 CMD npm start
