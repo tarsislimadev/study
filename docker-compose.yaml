@@ -2,6 +2,10 @@ version: '3'
 
 services:
 
+  github-release:
+    image: 'github-release'
+    build: './src'
+
   www:
     build: './src/www'
     volumes:
