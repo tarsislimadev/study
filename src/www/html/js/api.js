@@ -52,12 +52,12 @@ Ajax.post = (path = [], data = {}) => {
 
 const API = {}
 
-API.listForms = ({ } = {}) => Ajax.post(['forms'])
+API.createForm = ({ } = {}) => Ajax.post(['forms', 'create'], {})
 
-API.getForm = ({ id = null } = {}) => Ajax.post(['forms', id])
+API.listForms = ({ } = {}) => Ajax.post(['forms', 'list'], {})
 
-API.saveForm = ({ answers }) => Ajax.post(['forms', 'save'], { answers })
+API.saveForm = ({ answers = [] } = {}) => Ajax.post(['forms', 'save'], { answers })
 
-API.createQuestion = () => Ajax.post(['question', 'create'], {})
+API.listQuestions = ({ } = {}) => Ajax.post(['questions', 'list'], {})
 
-API.listQuestions = () => Ajax.post(['question', 'list'], {})
+API.createQuestion = ({ } = {}) => Ajax.post(['questions', 'create'], {})
