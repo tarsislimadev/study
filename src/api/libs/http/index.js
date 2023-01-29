@@ -1,5 +1,5 @@
-const Request = require('./request')
-const Response = require('./response')
+const Request = require('../../libs/http/request')
+const Response = require('../../libs/http/response')
 
 module.exports = {
   Request,
