@@ -1,8 +1,4 @@
-FROM node:lts-alpine
-
-ENV PATH=/data
-
-ENV PORT=80
+FROM node:lts
 
 WORKDIR /app
 
