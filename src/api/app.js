@@ -2,16 +2,18 @@ const logger = require('./libs/logger')
 const db = require('./libs/database')
 const app = require('./router')
 
+const actions = require('./actions')
+
 app.post(['api', 'v1', 'forms', 'list'], (req, res) => {
   logger.info('routes:app.post:forms.list', { req, res })
 
-  return res.setJSON({})
+  return actions.forms.list(req, res)
 })
 
 app.post(['api', 'v1', 'forms', 'create'], (req, res) => {
   logger.info('routes:app.post:forms.create', { req, res })
 
-  return res.setJSON({})
+  return actions.forms.create(req, res)
 })
 
 app.post(['api', 'v1', 'forms', 'save'], (req, res) => {
