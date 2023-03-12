@@ -23,3 +23,5 @@ services:
     build: './src/api'
     volumes:
       - './src/api:/app'
+    ports:
+      - '8080:80'
