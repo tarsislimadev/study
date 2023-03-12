@@ -20,7 +20,6 @@ services:
       - 'api'
 
   api:
-    container_name: 'api'
     build: './src/api'
     volumes:
       - './src/api:/app'
